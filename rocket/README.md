@@ -1,0 +1,3 @@
+# rocket.py
+
+This is a recreation of one of the earliest BASIC programs my classmates and I ever did. More of a novelty than a game, it launches a rocket from bottom of the screen, off the top. In BASIC, we did this just by adding extra blank lines to the bottom of the screen, so we didn't have to worry about positioning the rocket on each iteration, or validating that a given line was within the screen buffer. But this still gives the same result. To the moon...
