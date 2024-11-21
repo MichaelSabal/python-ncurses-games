@@ -1,5 +1,16 @@
 import random
 
+def countBullsAndCows(guess, actual):
+    cows = 0
+    bulls = 0
+    for ug in range(0,4):
+        if actual[ug] == guess[ug]:
+            bulls = bulls + 1
+        else:
+            if guess[ug] in actual:
+                cows = cows + 1
+    return bulls, cows
+
 def main():
     numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     random.shuffle(numbers)
@@ -20,29 +31,52 @@ def main():
         userNumberIsValid = True
     weHaveAWinner = False
     turn = 0
-    print(computerNumber)
+    computerGuessSequence = numbers.copy()
+    random.shuffle(computerGuessSequence)
+    computerGuessList = []
+    knownNumbers = [-1, -1, -1, -1]
     while not weHaveAWinner:
         if turn > 0 or random.randint(1,2) == 1:
             userGuess = input("Guess my number: ")
             userGuess = list(userGuess)
-            print(userGuess)
             if userGuess == computerNumber:
                 weHaveAWinner = True
                 print("Congratulations! You got it!")
+                continue
             else:
-                cows = 0
-                bulls = 0
-                for ug in range(0,4):
-                    if computerNumber[ug] == userGuess[ug]:
-                        bulls = bulls + 1
-                    else:
-                        if userGuess[ug] in computerNumber:
-                            cows = cows + 1
+                bulls, cows = countBullsAndCows(userGuess, computerNumber)
                 print(f"{bulls} bulls and {cows} cows")
+        if turn == 0:
+            newGuess = computerGuessSequence[0:4]
+        else:
+            shuffledNumbers = numbers.copy()
+            random.shuffle(shuffledNumbers)
+            newGuess = knownNumbers.copy()
+            random.shuffle(newGuess)
+            if -1 in newGuess:
+                for i in range(0,4):
+                    if newGuess[i] == -1:
+                        newGuess[i] = shuffledNumbers[i]
+
+        bulls, cows = countBullsAndCows(newGuess, userNumber)
+        if bulls == 4:
+            weHaveAWinner = True
+            print("Ha! I win!")
+            continue
+        computerGuessList.append(newGuess + [bulls, cows])
+        if bulls + cows == 0:
+            for i in range(0,4):
+                numbers.remove(newGuess[i])
+        if bulls + cows == 4:
+            knownNumbers = newGuess.copy()
+        newGuess = ''.join(newGuess)
+        print(f"My guess: {newGuess}")
+        print(f"{bulls} bulls and {cows} cows")
+
         turn = turn + 1
 
-
-    return False
+    newGame = input("Would you like to play again (Y/N)? ")
+    return newGame.lower() == 'y'
 
 while main():
     print("\n")    
