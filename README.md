@@ -8,3 +8,6 @@ This collection is 100% just for fun, and I have no intention of using it to dem
 ## So why ncurses, and why Python?
 
 ncurses is a rewrite of an old Unix toolkit which provides a windowing environment, and allows Z layering and cursor positioning, as well as keypress detection without the need for mouse for graphics controls. This makes it great for many types of game and novelty applications which can be played simply over an SSH terminal connection.  While ncurses bindings are present in many different languages, the popularity of Python, and the relatively recent support for the ncurses bindings, make this an ideal choice for this collection.
+In order to run these programs on Windows, you may need to install the Windows-curses wheel [https://pypi.org/project/windows-curses/]. The curses library is generally preinstalled on most Linux systems.
+
+Other libraries which may be of interest here are PyGame and FbPy [https://pythonhosted.org/fbpy/], a framebuffer graphics library which does not require an X11 server.
