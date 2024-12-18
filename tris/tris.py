@@ -43,6 +43,34 @@ def canMoveRight(stdscr, piece, pieceAt, pieceRotation):
 			
 	return True
 	
+def checkLines(stdscr, upperLeft, size):
+	removedLines = 0
+	height = size[0]
+	width = size[1]
+	currentLine = upperLeft[0] + height
+	while currentLine > upperLeft[0]:
+		lineFilled = True
+		for x in range(upperLeft[1] + 1, upperLeft[1] + width + 2):
+			if (255 & stdscr.inch(currentLine, x)) == 32:
+				lineFilled = False
+				break
+		if lineFilled:
+			removedLines += 1
+			if currentLine > upperLeft[0] + 1:
+				updateLine = currentLine
+				while updateLine > upperLeft[0] + 1:
+					for j in range(0, width):
+						ch = stdscr.inch(updateLine - 1, upperLeft[1] + j + 1)
+						colorpair = curses.pair_content(ch & curses.A_COLOR)
+						stdscr.addstr(updateLine, j + upperLeft[1] + 1, chr(255 & ch), curses.color_pair(colorpair[1]))
+					updateLine -= 1
+				stdscr.addstr(upperLeft[0] + 1, upperLeft[1] + 1, ''.join([' '] * width))
+			else:
+				stdscr.addstr(currentLine, upperLeft[1] + 1, ''.join([' '] * width))
+		else:
+			currentLine -= 1
+	return removedLines
+	
 def undrawPiece(stdscr, piece, pieceAt, pieceRotation):
 	if piece == 1:
 		if pieceAt[0] > 0:
@@ -98,6 +126,10 @@ def playGame(stdscr):
 				lastVerticalTime = time()
 			else:
 				pieceAt = [-1, -1]
+				linesRemoved = checkLines(stdscr, upperLeft, [maxBoardLines, maxBoardColumns])
+				linesCleared += linesRemoved
+				score += (round * 100 * linesRemoved)
+				round = 1 + floor(linesCleared / maxBoardLines)
 		ch = stdscr.getch()
 		if ch > -1:
 			stdscr.addstr(13, 20, f"{ch}    ")
