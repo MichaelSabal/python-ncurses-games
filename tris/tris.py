@@ -3,6 +3,8 @@ from random import randint
 from time import sleep, time
 from math import floor
 
+PIECE_TYPE_COUNT = 2
+
 def initBoard(stdscr, y, x, h, w):
 	stdscr.clear()
 	stdscr.addstr(y, x, '╔')
@@ -22,6 +24,14 @@ def canMoveDown(stdscr, piece, pieceAt, pieceRotation):
 			return False
 		if (255 & stdscr.inch(pieceAt[0] + 1, pieceAt[1] + 1)) > 32:
 			return False
+	if piece == 2:
+		if (255 & stdscr.inch(pieceAt[0] + 1, pieceAt[1])) > 32:
+			return False
+		if pieceRotation == 90 or pieceRotation == 270:
+			if ((255 & stdscr.inch(pieceAt[0] + 1, pieceAt[1] + 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] + 1, pieceAt[1] + 2)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] + 1, pieceAt[1] + 3)) > 32):
+					return False
 			
 	return True
 	
@@ -31,6 +41,15 @@ def canMoveLeft(stdscr, piece, pieceAt, pieceRotation):
 			return False
 		if (255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] - 1)) > 32:
 			return False
+	if piece == 2:
+		if (255 & stdscr.inch(pieceAt[0], pieceAt[1] - 1)) > 32:
+			return False
+		if pieceRotation == 0 or pieceRotation == 180:
+			if ((255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] - 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 2, pieceAt[1] - 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 3, pieceAt[1] - 1)) > 32):
+					return False
+			
 			
 	return True
 	
@@ -40,7 +59,16 @@ def canMoveRight(stdscr, piece, pieceAt, pieceRotation):
 			return False
 		if (255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 2)) > 32:
 			return False
-			
+	if piece == 2:
+		if pieceRotation == 0 or pieceRotation == 180:
+			if ((255 & stdscr.inch(pieceAt[0] - 0, pieceAt[1] + 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 2, pieceAt[1] + 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 3, pieceAt[1] + 1)) > 32):
+					return False
+		elif pieceAt[1] > 6 or (255 & stdscr.inch(pieceAt[0], pieceAt[1] + 4)) > 32:
+			return False
+
 	return True
 	
 def checkLines(stdscr, upperLeft, size):
@@ -77,6 +105,14 @@ def undrawPiece(stdscr, piece, pieceAt, pieceRotation):
 			stdscr.addstr(pieceAt[0], pieceAt[1], '  ')
 		if pieceAt[0] > 1:
 			stdscr.addstr(pieceAt[0] - 1, pieceAt[1], '  ')
+	if piece == 2:
+		if pieceRotation == 0 or pieceRotation == 180:
+			for y in range(0,4):
+				if pieceAt[0] - y > 0:
+					stdscr.addstr(pieceAt[0] - y, pieceAt[1], ' ')
+		else:
+			for x in range(0,4):
+				stdscr.addstr(pieceAt[0], pieceAt[1] + x, ' ')
 	
 def drawPiece(stdscr, piece, pieceAt, pieceRotation):
 	if piece == 1:
@@ -84,6 +120,14 @@ def drawPiece(stdscr, piece, pieceAt, pieceRotation):
 			stdscr.addstr(pieceAt[0], pieceAt[1], '**')
 		if pieceAt[0] > 1:
 			stdscr.addstr(pieceAt[0] - 1, pieceAt[1], '**')
+	if piece == 2:
+		if pieceRotation == 0 or pieceRotation == 180:
+			for y in range(0,4):
+				if pieceAt[0] - y > 0:
+					stdscr.addstr(pieceAt[0] - y, pieceAt[1], '=')
+		else:
+			for x in range(0,4):
+				stdscr.addstr(pieceAt[0], pieceAt[1] + x, '=')
 
 def playGame(stdscr):
 	maxLines = curses.LINES
@@ -110,8 +154,12 @@ def playGame(stdscr):
 			stdscr.addstr(9, maxBoardColumns + 3, f"Lines: {linesCleared}")
 		if pieceAt[0] == -1:
 			thisPiece = nextPiece
-			nextPiece = randint(1,1)
+			# Add one to the max integer to better balance the mix of pieces
+			nextPiece = -1
+			while nextPiece < 1 or nextPiece > PIECE_TYPE_COUNT:
+				nextPiece = randint(1,PIECE_TYPE_COUNT + 1)
 			pieceAt = [0, 4]
+			pieceRotation = 0
 			if not canMoveDown(stdscr, thisPiece, pieceAt, pieceRotation):
 				gameOver = True
 				stdscr.addstr(11, maxBoardColumns + 3, "GAME OVER")
@@ -141,11 +189,15 @@ def playGame(stdscr):
 			undrawPiece(stdscr, thisPiece, pieceAt, pieceRotation)
 			pieceAt[1] += 1
 			drawPiece(stdscr, thisPiece, pieceAt, pieceRotation)
-		if ch == 258 and canMoveDown(stdscr, thisPiece, pieceAt, pieceRotation):
+		if (ch == 258 or ch == 10) and canMoveDown(stdscr, thisPiece, pieceAt, pieceRotation):
 			undrawPiece(stdscr, thisPiece, pieceAt, pieceRotation)
 			pieceAt[0] += 1
 			drawPiece(stdscr, thisPiece, pieceAt, pieceRotation)
 			score += 1
+		if (ch == 259 or ch == 32) and canMoveRight(stdscr, thisPiece, pieceAt, (pieceRotation + 90) % 360):
+			undrawPiece(stdscr, thisPiece, pieceAt, pieceRotation)
+			pieceRotation = (pieceRotation + 90) % 360
+			drawPiece(stdscr, thisPiece, pieceAt, pieceRotation)
 		if ch == 27 or (ch > 32 and chr(ch) in ['q','Q','x','X']):
 			gameOver = True
 		
