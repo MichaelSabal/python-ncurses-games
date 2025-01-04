@@ -4,7 +4,7 @@ from random import seed
 from time import sleep, time
 from math import floor
 
-PIECE_TYPE_COUNT = 5
+PIECE_TYPE_COUNT = 7
 
 def initBoard(stdscr, y, x, h, w):
 	stdscr.clear()
@@ -90,7 +90,27 @@ def canMoveDown(stdscr, piece, pieceAt, pieceRotation):
 			if ((255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 1)) > 32) or \
 				((255 & stdscr.inch(pieceAt[0] + 1, pieceAt[1])) > 32):
 					return False
-			
+	if piece == 6:
+		if pieceRotation == 0 or pieceRotation == 180:
+			if (pieceAt[0] > 0 and (255 & stdscr.inch(pieceAt[0], pieceAt[1])) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] + 1, pieceAt[1] + 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] + 1, pieceAt[1] + 2)) > 32):
+					return False
+		if pieceRotation == 90 or pieceRotation == 270:
+			if ((255 & stdscr.inch(pieceAt[0] + 1, pieceAt[1])) > 32) or \
+				(pieceAt[0] > 0 and (255 & stdscr.inch(pieceAt[0], pieceAt[1] + 1)) > 32):
+					return False
+	if piece == 7:
+		if pieceRotation == 0 or pieceRotation == 180:
+			if ((255 & stdscr.inch(pieceAt[0] + 1, pieceAt[1])) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] + 1, pieceAt[1] + 1)) > 32) or \
+				(pieceAt[0] > 0 and (255 & stdscr.inch(pieceAt[0], pieceAt[1] + 2)) > 32):
+					return False
+		if pieceRotation == 90 or pieceRotation == 270:
+			if (pieceAt[0] > 0 and (255 & stdscr.inch(pieceAt[0], pieceAt[1])) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] + 1, pieceAt[1] + 1)) > 32):
+					return False
+
 	return True
 	
 def canMoveLeft(stdscr, piece, pieceAt, pieceRotation):
@@ -163,6 +183,26 @@ def canMoveLeft(stdscr, piece, pieceAt, pieceRotation):
 					return False
 		if pieceRotation == 270:
 			if ((255 & stdscr.inch(pieceAt[0], pieceAt[1] - 1)) > 32) or \
+				(pieceAt[0] > 1 and (255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] - 1)) > 32) or \
+				(pieceAt[0] > 2 and (255 & stdscr.inch(pieceAt[0] - 2, pieceAt[1] - 1)) > 32):
+					return False
+	if piece == 6:
+		if pieceRotation == 0 or pieceRotation == 180:
+			if ((255 & stdscr.inch(pieceAt[0], pieceAt[1])) > 32) or \
+				(pieceAt[0] > 1 and (255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] - 1)) > 32):
+					return False
+		if pieceRotation == 90 or pieceRotation == 270:
+			if ((255 & stdscr.inch(pieceAt[0], pieceAt[1] - 1)) > 32) or \
+				(pieceAt[0] > 1 and (255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] - 1)) > 32) or \
+				(pieceAt[0] > 2 and (255 & stdscr.inch(pieceAt[0] - 2, pieceAt[1])) > 32):
+					return False
+	if piece == 7:
+		if pieceRotation == 0 or pieceRotation == 180:
+			if ((255 & stdscr.inch(pieceAt[0], pieceAt[1] - 1)) > 32) or \
+				(pieceAt[0] > 1 and (255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1])) > 32):
+					return False
+		if pieceRotation == 90 or pieceRotation == 270:
+			if ((255 & stdscr.inch(pieceAt[0], pieceAt[1])) > 32) or \
 				(pieceAt[0] > 1 and (255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] - 1)) > 32) or \
 				(pieceAt[0] > 2 and (255 & stdscr.inch(pieceAt[0] - 2, pieceAt[1] - 1)) > 32):
 					return False
@@ -244,7 +284,26 @@ def canMoveRight(stdscr, piece, pieceAt, pieceRotation):
 				(pieceAt[0] > 1 and (255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 1)) > 32) or \
 				(pieceAt[0] > 2 and (255 & stdscr.inch(pieceAt[0] - 2, pieceAt[1] + 2)) > 32):
 					return False
-
+	if piece == 6:
+		if pieceRotation == 0 or pieceRotation == 180:
+			if ((255 & stdscr.inch(pieceAt[0], pieceAt[1] + 3)) > 32) or \
+				(pieceAt[0] > 1 and (255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 2)) > 32):
+					return False
+		if pieceRotation == 90 or pieceRotation == 270:
+			if ((255 & stdscr.inch(pieceAt[0], pieceAt[1] + 1)) > 32) or \
+				(pieceAt[0] > 1 and (255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 2)) > 32) or \
+				(pieceAt[0] > 2 and (255 & stdscr.inch(pieceAt[0] - 2, pieceAt[1] + 2)) > 32):
+					return False
+	if piece == 7:
+		if pieceRotation == 0 or pieceRotation == 180:
+			if ((255 & stdscr.inch(pieceAt[0], pieceAt[1] + 2)) > 32) or \
+				(pieceAt[0] > 1 and (255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 3)) > 32):
+					return False
+		if pieceRotation == 90 or pieceRotation == 270:
+			if ((255 & stdscr.inch(pieceAt[0], pieceAt[1] + 2)) > 32) or \
+				(pieceAt[0] > 1 and (255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 2)) > 32) or \
+				(pieceAt[0] > 2 and (255 & stdscr.inch(pieceAt[0] - 2, pieceAt[1] + 1)) > 32):
+					return False
 	return True
 	
 def canRotate(stdscr, piece, pieceAt, pieceRotation):
@@ -338,7 +397,32 @@ def canRotate(stdscr, piece, pieceAt, pieceRotation):
 				((255 & stdscr.inch(pieceAt[0] - 2, pieceAt[1])) > 32) or \
 				((255 & stdscr.inch(pieceAt[0] - 2, pieceAt[1] + 1)) > 32):
 					return False
-	
+	if piece == 6:
+		if pieceRotation == 0 or pieceRotation == 180:
+			if ((255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1])) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0], pieceAt[1] + 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0], pieceAt[1] + 2)) > 32):
+					return False
+		if pieceRotation == 90 or pieceRotation == 270:
+			if ((255 & stdscr.inch(pieceAt[0], pieceAt[1])) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1])) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 2, pieceAt[1] + 1)) > 32):
+					return False
+	if piece == 7:
+		if pieceRotation == 0 or pieceRotation == 180:
+			if ((255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 2)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0], pieceAt[1])) > 32) or \
+				((255 & stdscr.inch(pieceAt[0], pieceAt[1] + 1)) > 32):
+					return False
+		if pieceRotation == 90 or pieceRotation == 270:
+			if ((255 & stdscr.inch(pieceAt[0], pieceAt[1] + 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1] + 1)) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 1, pieceAt[1])) > 32) or \
+				((255 & stdscr.inch(pieceAt[0] - 2, pieceAt[1])) > 32):
+					return False
 	return True
 	
 def checkLines(stdscr, upperLeft, size):
@@ -453,6 +537,32 @@ def undrawPiece(stdscr, piece, pieceAt, pieceRotation):
 				stdscr.addstr(pieceAt[0] - 1, pieceAt[1], ' ', BLANK)
 			if pieceAt[0] > 2:
 				stdscr.addstr(pieceAt[0] - 2, pieceAt[1], '  ', BLANK)
+	if piece == 6:
+		if pieceAt[0] <= 0:
+			return
+		if pieceRotation == 0 or pieceRotation == 180:
+			stdscr.addstr(pieceAt[0], pieceAt[1] + 1, '  ', BLANK)
+			if pieceAt[0] > 1:
+				stdscr.addstr(pieceAt[0] - 1, pieceAt[1] + 0, '  ', BLANK)
+		if pieceRotation == 90 or pieceRotation == 270:
+			stdscr.addstr(pieceAt[0], pieceAt[1], ' ', BLANK)
+			if pieceAt[0] > 1:
+				stdscr.addstr(pieceAt[0] - 1, pieceAt[1], '  ', BLANK)
+			if pieceAt[0] > 2:
+				stdscr.addstr(pieceAt[0] - 2, pieceAt[1] + 1, ' ', BLANK)
+	if piece == 7:
+		if pieceAt[0] <= 0:
+			return
+		if pieceRotation == 0 or pieceRotation == 180:
+			stdscr.addstr(pieceAt[0], pieceAt[1] + 0, '  ', BLANK)
+			if pieceAt[0] > 1:
+				stdscr.addstr(pieceAt[0] - 1, pieceAt[1] + 1, '  ', BLANK)
+		if pieceRotation == 90 or pieceRotation == 270:
+			stdscr.addstr(pieceAt[0], pieceAt[1] + 1, ' ', BLANK)
+			if pieceAt[0] > 1:
+				stdscr.addstr(pieceAt[0] - 1, pieceAt[1], '  ', BLANK)
+			if pieceAt[0] > 2:
+				stdscr.addstr(pieceAt[0] - 2, pieceAt[1], ' ', BLANK)
 	
 def drawPiece(stdscr, piece, pieceAt, pieceRotation):
 	if piece == 1:
@@ -538,6 +648,32 @@ def drawPiece(stdscr, piece, pieceAt, pieceRotation):
 				stdscr.addstr(pieceAt[0] - 1, pieceAt[1], 'J', curses.color_pair(piece))
 			if pieceAt[0] > 2:
 				stdscr.addstr(pieceAt[0] - 2, pieceAt[1], 'JJ', curses.color_pair(piece))
+	if piece == 6:
+		if pieceAt[0] <= 0:
+			return
+		if pieceRotation == 0 or pieceRotation == 180:
+			stdscr.addstr(pieceAt[0], pieceAt[1] + 1, '22', curses.color_pair(piece))
+			if pieceAt[0] > 1:
+				stdscr.addstr(pieceAt[0] - 1, pieceAt[1] + 0, '22', curses.color_pair(piece))
+		if pieceRotation == 90 or pieceRotation == 270:
+			stdscr.addstr(pieceAt[0], pieceAt[1], '2', curses.color_pair(piece))
+			if pieceAt[0] > 1:
+				stdscr.addstr(pieceAt[0] - 1, pieceAt[1], '22', curses.color_pair(piece))
+			if pieceAt[0] > 2:
+				stdscr.addstr(pieceAt[0] - 2, pieceAt[1] + 1, '2', curses.color_pair(piece))
+	if piece == 7:
+		if pieceAt[0] <= 0:
+			return
+		if pieceRotation == 0 or pieceRotation == 180:
+			stdscr.addstr(pieceAt[0], pieceAt[1] + 0, '55', curses.color_pair(piece))
+			if pieceAt[0] > 1:
+				stdscr.addstr(pieceAt[0] - 1, pieceAt[1] + 1, '55', curses.color_pair(piece))
+		if pieceRotation == 90 or pieceRotation == 270:
+			stdscr.addstr(pieceAt[0], pieceAt[1] + 1, '5', curses.color_pair(piece))
+			if pieceAt[0] > 1:
+				stdscr.addstr(pieceAt[0] - 1, pieceAt[1], '55', curses.color_pair(piece))
+			if pieceAt[0] > 2:
+				stdscr.addstr(pieceAt[0] - 2, pieceAt[1], '5', curses.color_pair(piece))
 
 def playGame(stdscr):
 	maxLines = curses.LINES
@@ -552,6 +688,11 @@ def playGame(stdscr):
 	upperLeft = [0, 0]
 	
 	initBoard(stdscr, upperLeft[0], upperLeft[1], maxBoardLines, maxBoardColumns)
+	if maxColumns - maxBoardColumns > 20:
+		stdscr.addstr(2, maxBoardColumns + 3, "Move piece: L/R Arrow")
+		stdscr.addstr(3, maxBoardColumns + 3, "Rotate: Up Arrow or Space")
+		stdscr.addstr(4, maxBoardColumns + 3, "Drop: Down Arrow or Enter")
+		stdscr.addstr(5, maxBoardColumns + 3, "Quit: Esc or X or Q")
 	gameOver = False
 	pieceAt = [-1, -1]
 	nextPiece = -1
@@ -563,9 +704,9 @@ def playGame(stdscr):
 	lastVerticalTime = time()
 	while not gameOver:
 		if maxColumns - maxBoardColumns > 20:
-			stdscr.addstr(5, maxBoardColumns + 3, f"Round: {round}")
-			stdscr.addstr(7, maxBoardColumns + 3, f"Score: {score}")
-			stdscr.addstr(9, maxBoardColumns + 3, f"Lines: {linesCleared}")
+			stdscr.addstr(7, maxBoardColumns + 3, f"Round: {round}")
+			stdscr.addstr(9, maxBoardColumns + 3, f"Score: {score}")
+			stdscr.addstr(11, maxBoardColumns + 3, f"Lines: {linesCleared}")
 		if pieceAt[0] == -1:
 			thisPiece = nextPiece
 			# Multiply max integer by 10 to better balance the mix of pieces
@@ -577,7 +718,7 @@ def playGame(stdscr):
 			pieceRotation = 0
 			if not canMoveDown(stdscr, thisPiece, pieceAt, pieceRotation):
 				gameOver = True
-				stdscr.addstr(11, maxBoardColumns + 3, "GAME OVER")
+				stdscr.addstr(13, maxBoardColumns + 3, "GAME OVER")
 				break
 			score += 10
 		if (time() - lastVerticalTime) > (10 / (round + 5)):
