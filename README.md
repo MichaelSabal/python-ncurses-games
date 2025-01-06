@@ -11,3 +11,9 @@ ncurses is a rewrite of an old Unix toolkit which provides a windowing environme
 In order to run these programs on Windows, you may need to install the Windows-curses wheel [https://pypi.org/project/windows-curses/]. The curses library is generally preinstalled on most Linux systems.
 
 Other libraries which may be of interest here are PyGame and FbPy [https://pythonhosted.org/fbpy/], a framebuffer graphics library which does not require an X11 server.
+
+## Word games
+
+Some of the games, such as hangman, make use of a sorted lexicon. This lexicon was compiled by Junko Miura for a Euphoria Spell Check program. The original program may be found here:
+http://rapideuphoria.com/cgi-bin/asearch.exu?dos=on&win=on&lnx=on&gen=on&keywords=spell
+
