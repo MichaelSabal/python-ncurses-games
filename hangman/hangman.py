@@ -1,4 +1,5 @@
 import curses
+import os
 from random import randint
 from random import seed
 from time import sleep, time
@@ -53,8 +54,9 @@ def playGame(stdscr):
 	stdscr.addstr(20, 0, '─┴─')
 	
 	# Choose the word to guess
+	basedir = os.path.dirname(os.path.realpath(__file__))
 	wordNumber = randint(0, WORDLIST_SIZE - 1)
-	with open('../wordlist.txt') as fp:
+	with open(basedir + '/../wordlist.txt') as fp:
 		for i, line in enumerate(fp):
 			if i == wordNumber:
 				wordToGuess = line.rstrip().upper()

@@ -1,0 +1,95 @@
+#!/usr/bin/python
+import curses
+import sys
+import os
+from math import floor
+
+menuItems = [
+	{"key": "a", "name": "Rocket", "exec": "rocket/rocket.py"},
+	{"key": "b", "name": "Stars", "exec": "stars/stars.py"},
+	{"key": "c", "name": "Moo", "exec": "mastermind/moo.py"},
+	{"key": "d", "name": "Mastermind", "exec": "mastermind/mm.py"},
+	{"key": "e", "name": "Tris", "exec": "tris/tris.py"},
+	{"key": "f", "name": "Hangman", "exec": "hangman/hangman.py"},
+	{"key": "ESC", "name": "Goodbye", "exec": ""}
+]
+
+def playGame(stdscr):
+	stdscr.addstr(0, 0, "Use the arrows to select and press <ENTER>, or press the hotkey.")
+	for i in range(0,len(menuItems)):
+		row = 2 + floor(i/2)
+		col = 30 * (i % 2)
+		stdscr.addstr(row, col, menuItems[i]["key"] + ": " + menuItems[i]["name"])
+	
+	currentSelection = 0
+	stdscr.addstr(2, 0, menuItems[0]["key"] + ": " + menuItems[0]["name"], curses.color_pair(7))
+	
+	while True:
+		ch = stdscr.getch()
+		if ch == -1:
+			continue
+		row = 2 + floor(currentSelection/2)
+		col = 30 * (currentSelection % 2)
+		if ch == 27:
+			break
+		if ch == 260 or ch == 261: # Left or Right arrow
+			stdscr.addstr(row, col, menuItems[currentSelection]["key"] + ": " + menuItems[currentSelection]["name"], curses.color_pair(8))
+			if col == 0 and currentSelection < len(menuItems) - 1:
+				currentSelection += 1
+				col = 30
+			elif currentSelection < len(menuItems) - 1:
+				currentSelection -= 1
+				col = 0
+			stdscr.addstr(row, col, menuItems[currentSelection]["key"] + ": " + menuItems[currentSelection]["name"], curses.color_pair(7))
+		if ch == 258: # Down arrow
+			stdscr.addstr(row, col, menuItems[currentSelection]["key"] + ": " + menuItems[currentSelection]["name"], curses.color_pair(8))
+			if currentSelection + 2 >= len(menuItems):
+				currentSelection = currentSelection % 2
+			else:
+				currentSelection += 2
+			row = 2 + floor(currentSelection/2)
+			stdscr.addstr(row, col, menuItems[currentSelection]["key"] + ": " + menuItems[currentSelection]["name"], curses.color_pair(7))
+		if ch == 259: # Up arrow
+			stdscr.addstr(row, col, menuItems[currentSelection]["key"] + ": " + menuItems[currentSelection]["name"], curses.color_pair(8))
+			if currentSelection == 0:
+				currentSelection = len(menuItems) - 1
+				if (currentSelection % 2 == 1):
+					currentSelection -= 1
+			elif currentSelection == 1:
+				currentSelection = len(menuItems) - 1
+				if (currentSelection % 2 == 0):
+					currentSelection -= 1
+			else:
+				currentSelection -= 2
+			row = 2 + floor(currentSelection/2)
+			stdscr.addstr(row, col, menuItems[currentSelection]["key"] + ": " + menuItems[currentSelection]["name"], curses.color_pair(7))
+		if ch == 10: # Enter
+			if menuItems[currentSelection]["key"] == 'ESC':
+				break
+			os.system("python " + menuItems[currentSelection]["exec"])
+		ch = chr(ch).lower()
+		for i in range(0, len(menuItems)):
+			if ch == menuItems[i]["key"]:
+				os.system("python " + menuItems[i]["exec"])
+				break
+
+def main(stdscr):
+	curses.start_color()
+	curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_RED)
+	curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_GREEN)
+	curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_YELLOW)
+	curses.init_pair(4, curses.COLOR_WHITE, curses.COLOR_BLUE)
+	curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_MAGENTA)
+	curses.init_pair(6, curses.COLOR_BLACK, curses.COLOR_CYAN)
+	curses.init_pair(7, curses.COLOR_BLACK, curses.COLOR_WHITE)
+	curses.init_pair(8, curses.COLOR_WHITE, curses.COLOR_BLACK)
+
+	stdscr.nodelay(True)
+	stdscr.immedok(True)
+	stdscr.clear()
+	curses.curs_set(0)
+	
+	while playGame(stdscr):
+		stdscr.clear()
+
+curses.wrapper(main)
