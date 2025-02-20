@@ -11,6 +11,7 @@ menuItems = [
 	{"key": "d", "name": "Mastermind", "exec": "mastermind/mm.py"},
 	{"key": "e", "name": "Tris", "exec": "tris/tris.py"},
 	{"key": "f", "name": "Hangman", "exec": "hangman/hangman.py"},
+	{"key": "g", "name": "Blackjack", "exec": "blackjack/blackjack.py"},
 	{"key": "ESC", "name": "Goodbye", "exec": ""}
 ]
 
