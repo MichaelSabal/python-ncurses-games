@@ -42,12 +42,23 @@ def playGame(stdscr, computerMoney, humanMoney):
 	computerHand.addToBottom(drawPile.takeFromTop().place(8,8,0,True).draw(stdscr))
 	computerSum = bestValue(computerHand)
 	stdscr.addstr(20, 0, f"Place your bet (max ${humanMoney}): $")
-	curses.echo()
+	betstr = ''
 	while True:
-		bet = int(stdscr.getstr(20, 26 + floor(log10(humanMoney)), 10).decode(encoding="utf-8"))
+		stdscr.addstr(20, 26 + floor(log10(humanMoney)), betstr)
+		betchar = -1
+		while betchar < 48 or betchar > 57:
+			betchar = stdscr.getch()
+			if betchar == 10 or betchar == 13:
+				break
+		if betchar >= 48 and betchar <= 57:
+			betstr = betstr + chr(betchar)
+			continue
+		try:
+			bet = int(betstr)
+		except:
+			continue
 		if bet > -1 and bet <= humanMoney:
 			break
-	curses.noecho()
 	roundInProgress = humanSum < 21 and computerSum < 21
 	humanResult = 1 if humanSum == 21 else 0
 	computerResult = 1 if computerSum == 21 else 0
